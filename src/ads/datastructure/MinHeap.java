@@ -48,11 +48,25 @@ public class MinHeap<T> {
 		return min ;
 	}
 	
-	public void decreaseKey( T key , int index )
+	//will store the updated value of key
+	// caller will get the data stored and update the value and call this function
+	// 
+	public void updateKey( T key , int index )
 	{
-		if( index < size)
+		if( index > 0 && index < size)
 		{
 			hArray[index] = key ;
+			bottomupHeapify(index) ;
+			topdownHeapify(index) ;
+		}
+	}
+	
+	public void increaseKey( T key , int index )
+	{
+		if( index > 0 &&  index < size)
+		{
+			hArray[index] = key ;
+			topdownHeapify(index) ;
 		}
 	}
 	//Bottomup heapify

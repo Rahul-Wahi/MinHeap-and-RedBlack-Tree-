@@ -10,9 +10,31 @@ public class risingCity {
 		
 	}
 	
-	public void startWork()
+	//Increment counter and call executeCommand function
+	public void incrementCounter()
 	{
 		risingCity.globalTime++ ;
+		executeCommand() ;
+		
+	}
+	
+	//will exexute commands based on global counter value
+	public void executeCommand()
+	{
+		
+	}
+	
+	//will exexute commands based on global counter value
+	public int getMin()
+	{
+		return 	buildingRecord.getMin().buildingNum ;
+	}
+	
+	// will pick buildings from heap 1 by 1
+	// will call incrementCounter function
+	public void startWork()
+	{
+		incrementCounter() ;
 		
 		while( work )
 		{
@@ -25,6 +47,12 @@ public class risingCity {
 				if( minTime == remainingTime)
 				{
 					buildingRecord.extractMin() ;
+				}
+				
+				while( minTime > 0 )
+				{
+					incrementCounter() ;
+					minTime-- ;
 				}
 			}
 		}
@@ -51,6 +79,12 @@ public class risingCity {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		risingCity rc = new risingCity(2000) ;
+		rc.insert(1, 12);
+		rc.insert(2, 12);
+		rc.insert(3, 12);
+		rc.insert(4, 12);
+		System.out.println(rc.getMin());
+		
 		
 		
 	}
