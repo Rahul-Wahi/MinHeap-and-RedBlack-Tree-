@@ -4,9 +4,9 @@ import java.util.Comparator;
 
 public class RedBlackTree<T> {
 
-	RedBlackNode root;
+	RedBlackNode<T> root;
 	Comparator<T> comp;
-	RedBlackNode newNode ;
+	RedBlackNode<T> newNode ;
 	
 
 	public RedBlackTree(Comparator<T> comp) {
@@ -18,7 +18,7 @@ public class RedBlackTree<T> {
 		if( this.root == null)
 		{
 			//root is black node
-			this.root = new RedBlackNode(key , null ,  data , 0) ;
+			this.root = new RedBlackNode<T>(key , null ,  data , 0) ;
 			this.newNode = this.root ;
 			return ;
 		}
@@ -29,10 +29,10 @@ public class RedBlackTree<T> {
 		//insert()
 	}
 
-	public RedBlackNode<T> insert(RedBlackNode root, int key , T data) {
+	public RedBlackNode<T> insert(RedBlackNode<T> root, int key , T data) {
 		if (root.isLeafNode == true) {
 			// root is black node
-			RedBlackNode newNode =  new RedBlackNode(key , root.parent ,  data, 1);
+			RedBlackNode<T> newNode =  new RedBlackNode<T>(key , root.parent ,  data, 1);
 			this.newNode =  newNode;
 			return newNode ;
 			
@@ -55,7 +55,7 @@ public class RedBlackTree<T> {
 		return root;
 	}
 
-	public void doBalancing(RedBlackNode x)
+	public void doBalancing(RedBlackNode<T> x)
 	{
 		if( x ==  this.root)
 			return;
@@ -68,8 +68,8 @@ public class RedBlackTree<T> {
 		   // change grandparent color to red
 			//x.parent.parent.color = 1 ;
 			
-			RedBlackNode parent = x.parent ;
-			RedBlackNode grandParent = x.parent.parent ;
+			RedBlackNode<T> parent = x.parent ;
+			RedBlackNode<T> grandParent = x.parent.parent ;
 			
 			// parent color will be chnaged to black color in all cases
 			parent.color = 0 ;
@@ -187,9 +187,9 @@ public class RedBlackTree<T> {
 		}
 	}
 	// Will do the LL rotation from node x
-	public void llRotation(RedBlackNode x) {
+	public void llRotation(RedBlackNode<T> x) {
 		// save x parents
-		RedBlackNode parent = x.parent;
+		RedBlackNode<T> parent = x.parent;
 
 		
 
@@ -240,9 +240,9 @@ public class RedBlackTree<T> {
 	}
 
 	// Will do the RR rotation from node x
-	public void rrRotation(RedBlackNode x) {
+	public void rrRotation(RedBlackNode<T> x) {
 		// save x parents
-		RedBlackNode parent = x.parent;
+		RedBlackNode<T> parent = x.parent;
 
 		// Change the root pointer , if parent is the root
 		if( x.parent == this.root)
@@ -286,12 +286,12 @@ public class RedBlackTree<T> {
 	}
 
 	// rotate lr rotions with respect to node x
-	public void lrRotation(RedBlackNode x) {
+	public void lrRotation(RedBlackNode<T> x) {
 
 		// first do rr rotation with respect to x
 		//rrRotation(x);
-		RedBlackNode parent = x.parent ;
-		RedBlackNode grandparent = x.parent.parent ;
+		RedBlackNode<T> parent = x.parent ;
+		RedBlackNode<T> grandparent = x.parent.parent ;
 		
 		if( grandparent == this.root)
 		{
@@ -327,13 +327,13 @@ public class RedBlackTree<T> {
 	}
 
 	// rotate lr rotions with respect to node x
-	public void rlRotation(RedBlackNode x) {
+	public void rlRotation(RedBlackNode<T> x) {
 
 		// first do ll rotation with respect to x
 		//llRotation(x);
 		
-		RedBlackNode parent = x.parent ;
-		RedBlackNode grandparent = x.parent.parent ;
+		RedBlackNode<T> parent = x.parent ;
+		RedBlackNode<T> grandparent = x.parent.parent ;
 		
 		if( grandparent == this.root)
 		{
@@ -371,7 +371,7 @@ public class RedBlackTree<T> {
 	public void printRange( int buildingNum1 , int buildingNum2 ) {
 		
 		
-		RedBlackNode node = findNodeBetweenRange( this.root , buildingNum1, buildingNum2 ) ;
+		RedBlackNode<T> node = findNodeBetweenRange( this.root , buildingNum1, buildingNum2 ) ;
 		//if(  !( root != null && buildingNum1 <= root.key  &&  buildingNum2 >= root.key ) )
 		if(node == null)
 		{
@@ -384,12 +384,12 @@ public class RedBlackTree<T> {
 		
 	}
 	
-	public RedBlackNode findNodeBetweenRange(RedBlackNode node, int buildingNum1 , int buildingNum2 )
+	public RedBlackNode<T> findNodeBetweenRange(RedBlackNode<T> node, int buildingNum1 , int buildingNum2 )
 	{
 		if(node == null || node.isLeafNode)
 			return null ;
 		
-		RedBlackNode result = null ;
+		RedBlackNode<T> result = null ;
 		if( node.key <  buildingNum1)
 		{
 			result =  findNodeBetweenRange(node.right , buildingNum1 , buildingNum2) ;
@@ -408,7 +408,7 @@ public class RedBlackTree<T> {
 		
 	}
 	
-	public void printRangeHelper( int buildingNum1 , int buildingNum2 , RedBlackNode root )
+	public void printRangeHelper( int buildingNum1 , int buildingNum2 , RedBlackNode<T> root )
 	{
 		if( root == null || root.isLeafNode == true )
 			return ;
@@ -425,9 +425,284 @@ public class RedBlackTree<T> {
 		
 	}
 	
-	public void delete( T data)
+	//This function will find the key node and delete that node
+	public void delete( int key)
 	{
+		RedBlackNode<T> keyNode = findKey( key , this.root ) ;
 		
+		if( keyNode == null)
+		{
+			System.out.println("Key  " + key + " not found");
+			return ;
+		}
+		if( keyNode.right.isLeafNode == false && keyNode.left.isLeafNode == false )
+		{
+			//2 Children case, replace with inorder successor
+			RedBlackNode<T> inorderSuccessorNode =  inorderSuccessor(keyNode) ;
+			keyNode.key = inorderSuccessorNode.key ;
+			keyNode.data  = inorderSuccessorNode.data ;
+			keyNode = inorderSuccessorNode ;
+			//deleteNode(inorderSuccessorNode) ;
+		}
+		
+		
+		deleteNode(keyNode) ;
+		
+	}
+	
+	//This function will delete the given node
+	public void deleteNode( RedBlackNode<T> node )
+	{
+		node.left.parent = node.parent ;
+		node.right.parent = node.parent ;
+		RedBlackNode<T> deficientNode = null ;
+		
+		if( node.right.isLeafNode)
+		{
+			//right child is null node, left can/can not be
+			// 1 or 0 child case
+			
+			deficientNode = node.left ;
+			
+			//deleteNode() ;                                          
+		}
+		else if ( node.left.isLeafNode )
+		{
+			//left child is null node, right can/can not be
+			// 1 or 0 child case 
+			deficientNode = node.right ;
+		}
+		
+		
+		if( isLeftChild(node) && node != this.root )
+		{
+			node.parent.left = deficientNode ;
+		}
+		else if( node != this.root )
+		{
+			node.parent.right = deficientNode ;
+		}
+		else
+		{
+			//if root Node
+			deficientNode.parent = node.parent ;
+			this.root =  deficientNode ;
+			
+		}
+		
+
+		if( node.color == 0)
+		{
+			// if color is black, fix the tree
+			deleteFixup( deficientNode ) ;
+		}
+		
+	}
+	
+	public void deleteFixup(RedBlackNode<T> node)
+	{
+		RedBlackNode<T> deficientNode = node ;
+		RedBlackNode<T> parent = node.parent ;
+		
+		//case 1
+		if( node == this.root )
+		{
+			//nothing to do
+			return ;
+		}
+		
+		
+		
+		if( isLeftChild( node ) )  
+		{
+			RedBlackNode<T> S = parent.right ;
+			
+			//case 6, parent color does not matter, sibling black, sibling's left child color does not matter
+			//sibling's right child color red
+			if( S.color == 0 && S.right.color == 1)
+			{
+				S.color = parent.color;
+				parent.color = 0 ;
+				//rr rotation around S
+				rrRotation(S) ;
+			}
+			
+			if( parent.color == 0 )
+			{
+				//parent is black
+				
+				//case 2, sibling red, with both black childeren
+				if( S.color == 1 && S.left.color == 0 && S.right.color == 0 )
+				{
+					rrRotation(S) ;
+					S.color = 0 ;
+					parent.color = 1 ;
+					deleteFixup( node ) ;
+				}
+				
+				//case 3, sibling is black, with both childeren red
+				// make sibling red and shift deficiency to parent
+				if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
+				{
+					
+					S.color = 1 ;
+					//parent is deficient
+					deleteFixup( parent ) ;
+				}
+				
+				//case 5 , sibling is black, sibling's left child red, sibling right child black
+				if( S.color == 0 && S.left.color == 1 && S.right.color == 0 )
+				{
+					S.left.color = 0;
+					S.color = 1 ;
+					//LL rotation around sibling's red child
+					llRotation(S.left) ;
+					
+					//above fixing lead to case 6
+					deleteFixup(node) ;
+				}
+				
+				
+			}
+			else
+			{
+				//parent is red
+				
+				//case 4, sibling black, with both children black
+				if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
+				{
+					
+					S.color = 1 ;
+					parent.color = 0 ;
+					//parent is deficient
+					deleteFixup( parent ) ;
+				}
+			}
+		}
+		else
+		{
+			//all the above cases will be the mirror images when node is in the right side
+			
+			RedBlackNode<T> S = parent.left ;
+			
+			//case 6, parent color does not matter, sibling black, sibling's left child color does not matter
+			//sibling's right child color red // check this
+			if( S.color == 0 && S.right.color == 1)
+			{
+				S.color = parent.color;
+				parent.color = 0 ;
+				//rr rotation around S
+				rrRotation(S) ;
+			}
+			
+			if( parent.color == 0 )
+			{
+				//parent is black
+				
+				//case 2, sibling red, with both black childeren
+				if( S.color == 1 && S.left.color == 0 && S.right.color == 0 )
+				{
+					//check this
+					llRotation(S) ;
+					S.color = 0 ;
+					parent.color = 1 ;
+					deleteFixup( node ) ;
+				}
+				
+				//case 3, sibling is black, with both childeren red
+				// make sibling red and shift deficiency to parent
+				if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
+				{
+					
+					S.color = 1 ;
+					//parent is deficient
+					deleteFixup( parent ) ;
+				}
+				
+				//case 5 , sibling is black, sibling's left child red, sibling right child black
+				if( S.color == 0 && S.left.color == 1 && S.right.color == 0 )
+				{
+					S.left.color = 0;
+					S.color = 1 ;
+					//LL rotation around sibling's red child
+					llRotation(S.left) ; // Check this
+					
+					//above fixing lead to case 6
+					deleteFixup(node) ;
+				}
+				
+				
+			}
+			else
+			{
+				//parent is red
+				
+				//case 4, sibling black, with both children black
+				if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
+				{
+					
+					S.color = 1 ;
+					parent.color = 0 ;
+					//parent is deficient
+					deleteFixup( parent ) ;
+				}
+			}
+		}
+		
+		
+	}
+	
+	public boolean isLeftChild(RedBlackNode<T> node)
+	{
+		if( node.parent.left == node)
+		{
+			//yes given is left child of its parent
+			return true ;
+		}
+
+		//No, given node is the right child of its parent
+		return false ;
+			
+	}
+	
+	//This function will return the inorder successor of Node node
+	public RedBlackNode<T> inorderSuccessor(RedBlackNode<T> node)
+	{
+		//return leftmost not null node in right subtree of node
+		RedBlackNode<T> right = node.right ;
+		
+		while( !right.left.isLeafNode )
+		{
+			right = right.left ;
+		}
+		return right ;
+	}
+	
+	public RedBlackNode<T> findKey( int key , RedBlackNode<T> node  )
+	{
+		//When node is null or reached the null leaf node return null
+		//No key found
+		if(node == null || node.isLeafNode )
+			return null ;
+		
+		RedBlackNode<T> keyNode = null ;
+		if( node.key > key )
+		{
+			//when current node key is greater than the key, than search in left subtree
+			keyNode = findKey(key , node.left ) ;
+		}
+		else if( node.key < key )
+		{
+			//when current node key is smaller than the key, than search in left subtree
+			keyNode = findKey(key , node.right ) ;
+		}
+		else
+		{
+			//when equal return the node itself
+			return node ;
+		}
+		
+		return keyNode ;
 	}
 	class RedBlackNode<T> {
 		int color;// 0 for black , 1 for red
