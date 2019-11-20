@@ -1,12 +1,16 @@
 package ads.datastructure;
 
+import ads.datastructure.RedBlackTree.RedBlackNode;
+
 public class risingCity {
 
 	public static int globalTime = 0 ;
 	public boolean work = true ; 
 	MinHeap<Building> buildingRecord;
+	RedBlackTree<Building> buildingRecordByBuilding ;
 	public risingCity( int capacity) {
 		buildingRecord = new MinHeap<Building>(capacity , new Comparatorexecutedtime() ) ;
+		buildingRecordByBuilding = new RedBlackTree<Building>(new ComparatorbuildingNum() ) ;
 		
 	}
 	
@@ -62,6 +66,7 @@ public class risingCity {
 	{
 		Building building = new Building( buildingNum, total_time ) ;
 		buildingRecord.insert( building );
+		buildingRecordByBuilding.insert(buildingNum,building);
 	}
 	
 	public void print( int buildingNum)
@@ -71,19 +76,28 @@ public class risingCity {
 	
 	public void print( int buildingNum1, int buildingNum2)
 	{
-		
+		buildingRecordByBuilding.printRange(buildingNum1, buildingNum2);
 	}
 	
+	public void printRangeHelper( int buildingNum1 , int buildingNum2 , RedBlackNode root )
+	{
+		
+	}
 	
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		risingCity rc = new risingCity(2000) ;
 		rc.insert(1, 12);
-		rc.insert(2, 12);
-		rc.insert(3, 12);
-		rc.insert(4, 12);
+		rc.insert(10, 10);
+		rc.insert(2, 11);
+		rc.insert(9, 9);
+		rc.insert(3, 9);
+		rc.insert(8, 9);
+		rc.insert(4, 9);
+		rc.insert(7, 9);
 		System.out.println(rc.getMin());
+		rc.print(11,10) ;
 		
 		
 		

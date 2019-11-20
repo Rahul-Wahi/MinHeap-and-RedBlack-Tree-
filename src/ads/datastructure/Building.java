@@ -13,6 +13,36 @@ public class Building {
 		this.total_time = total_time ;
 		this.executed_time = 0 ;
 	}
+	
+	public int getBuildingNum() {
+		return buildingNum;
+	}
+
+	public void setBuildingNum(int buildingNum) {
+		this.buildingNum = buildingNum;
+	}
+
+	public int getExecuted_time() {
+		return executed_time;
+	}
+
+	public void setExecuted_time(int executed_time) {
+		this.executed_time = executed_time;
+	}
+
+	public int getTotal_time() {
+		return total_time;
+	}
+
+	public void setTotal_time(int total_time) {
+		this.total_time = total_time;
+	}
+
+	//print the values of members of this class
+	public void printValues()
+	{
+		System.out.println("(" + this.buildingNum + "," + this.executed_time + "," + this.total_time + ")");
+	}
 }
 	class ComparatorbuildingNum implements Comparator<Building> 
 	{ 
