@@ -1,6 +1,8 @@
 package ads.datastructure;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class RedBlackTree<T> {
 
@@ -368,23 +370,48 @@ public class RedBlackTree<T> {
 
 	}
 
-	public void printRange( int buildingNum1 , int buildingNum2 ) {
+	public List<T> findElement( int buildingNum1 , int buildingNum2 ) {
 		
 		
-		RedBlackNode<T> node = findNodeBetweenRange( this.root , buildingNum1, buildingNum2 ) ;
+		RedBlackNode<T> node = findKeyNodeBetweenRange( this.root , buildingNum1, buildingNum2 ) ;
+		List<T> result = new ArrayList<T>() ;
 		//if(  !( root != null && buildingNum1 <= root.key  &&  buildingNum2 >= root.key ) )
 		if(node == null)
 		{
-			System.out.println("(0,0,0)");
+			//System.out.println("(0,0,0)");
+			return result ;
 		}
 		else
 		{
-			printRangeHelper( buildingNum1 , buildingNum2 , node ) ;
+			result = printRangeHelper( buildingNum1 , buildingNum2 , node ) ;
 		}
+		
+		return result ;
 		
 	}
 	
-	public RedBlackNode<T> findNodeBetweenRange(RedBlackNode<T> node, int buildingNum1 , int buildingNum2 )
+	public List<T> findElement( int buildingNum1  ) {
+		
+		
+		RedBlackNode<T> node = findKeyNode(buildingNum1 , this.root) ;
+		List<T> result = new ArrayList<T>() ;
+		//if(  !( root != null && buildingNum1 <= root.key  &&  buildingNum2 >= root.key ) )
+		
+		
+		if(node == null)
+		{
+			//System.out.println("(0,0,0)");
+			return result ;
+		}
+		else
+		{
+			result.add(node.data) ;
+		}
+		
+		return result ;
+		
+	}
+	public RedBlackNode<T> findKeyNodeBetweenRange(RedBlackNode<T> node, int buildingNum1 , int buildingNum2 )
 	{
 		if(node == null || node.isLeafNode)
 			return null ;
@@ -392,11 +419,11 @@ public class RedBlackTree<T> {
 		RedBlackNode<T> result = null ;
 		if( node.key <  buildingNum1)
 		{
-			result =  findNodeBetweenRange(node.right , buildingNum1 , buildingNum2) ;
+			result =  findKeyNodeBetweenRange(node.right , buildingNum1 , buildingNum2) ;
 		}
 		if(node.key > buildingNum2)
 		{
-			result =  findNodeBetweenRange(node.left, buildingNum1 , buildingNum2 ) ;
+			result =  findKeyNodeBetweenRange(node.left, buildingNum1 , buildingNum2 ) ;
 		}
 		
 		if( buildingNum1 <= node.key && node.key <= buildingNum2 )
@@ -408,18 +435,31 @@ public class RedBlackTree<T> {
 		
 	}
 	
-	public void printRangeHelper( int buildingNum1 , int buildingNum2 , RedBlackNode<T> root )
+	public List<T> printRangeHelper( int buildingNum1 , int buildingNum2 , RedBlackNode<T> root )
 	{
 		if( root == null || root.isLeafNode == true )
-			return ;
+			return null;
 		
+		List<T> result = new ArrayList<T>() ;
 		if( buildingNum1 <= root.key  &&  buildingNum2 >= root.key )
 		{
-			printRangeHelper(buildingNum1 , buildingNum2 , root.left ) ;
+			List<T> tmp = printRangeHelper(buildingNum1 , buildingNum2 , root.left ) ;
+			if (tmp != null)
+			{
+				result.addAll(tmp) ;
+			}
+			result.add(root.data) ;
 			//((T) root.data).printValues() ;
-			((Building)root.data).printValues() ;
-			printRangeHelper(buildingNum1 , buildingNum2 , root.right ) ;
+			//((T)root.data).printValues() ;
+			tmp = printRangeHelper(buildingNum1 , buildingNum2 , root.right ) ;
+			if (tmp != null)
+			{
+				result.addAll(tmp) ;
+			}
+			
 		}
+		
+		return result ;
 		
 		
 		
@@ -428,7 +468,7 @@ public class RedBlackTree<T> {
 	//This function will find the key node and delete that node
 	public void delete( int key)
 	{
-		RedBlackNode<T> keyNode = findKey( key , this.root ) ;
+		RedBlackNode<T> keyNode = findKeyNode( key , this.root ) ;
 		
 		if( keyNode == null)
 		{
@@ -446,7 +486,7 @@ public class RedBlackTree<T> {
 		}
 		
 		
-		deleteNode(keyNode) ;
+		deleteNode( keyNode ) ;
 		
 	}
 	
@@ -474,7 +514,7 @@ public class RedBlackTree<T> {
 		}
 		
 		
-		if( isLeftChild(node) && node != this.root )
+		if( node != this.root && isLeftChild(node)  )
 		{
 			node.parent.left = deficientNode ;
 		}
@@ -493,8 +533,20 @@ public class RedBlackTree<T> {
 
 		if( node.color == 0)
 		{
-			// if color is black, fix the tree
-			deleteFixup( deficientNode ) ;
+			if(deficientNode.color == 1)
+			{
+				deficientNode.color = 0 ;
+			}
+			else
+			{
+				// if color is black, fix the tree
+				deleteFixup( deficientNode ) ;
+			}
+			
+		}
+		else
+		{
+			
 		}
 		
 	}
@@ -522,9 +574,11 @@ public class RedBlackTree<T> {
 			if( S.color == 0 && S.right.color == 1)
 			{
 				S.color = parent.color;
+				S.right.color = 0 ;
 				parent.color = 0 ;
 				//rr rotation around S
 				rrRotation(S) ;
+				return ;
 			}
 			
 			if( parent.color == 0 )
@@ -575,7 +629,7 @@ public class RedBlackTree<T> {
 					S.color = 1 ;
 					parent.color = 0 ;
 					//parent is deficient
-					deleteFixup( parent ) ;
+					//deleteFixup( parent ) ;
 				}
 			}
 		}
@@ -587,12 +641,14 @@ public class RedBlackTree<T> {
 			
 			//case 6, parent color does not matter, sibling black, sibling's left child color does not matter
 			//sibling's right child color red // check this
-			if( S.color == 0 && S.right.color == 1)
+			if( S.color == 0 && S.left.color == 1)
 			{
 				S.color = parent.color;
+				S.left.color = 0 ;
 				parent.color = 0 ;
 				//rr rotation around S
-				rrRotation(S) ;
+				llRotation(S) ;
+				return ;
 			}
 			
 			if( parent.color == 0 )
@@ -620,12 +676,12 @@ public class RedBlackTree<T> {
 				}
 				
 				//case 5 , sibling is black, sibling's left child red, sibling right child black
-				if( S.color == 0 && S.left.color == 1 && S.right.color == 0 )
+				if( S.color == 0 && S.right.color == 1 && S.left.color == 0 )
 				{
-					S.left.color = 0;
+					S.right.color = 0;
 					S.color = 1 ;
-					//LL rotation around sibling's red child
-					llRotation(S.left) ; // Check this
+					//rr rotation around sibling's red child
+					rrRotation(S.right) ; // Check this
 					
 					//above fixing lead to case 6
 					deleteFixup(node) ;
@@ -644,7 +700,7 @@ public class RedBlackTree<T> {
 					S.color = 1 ;
 					parent.color = 0 ;
 					//parent is deficient
-					deleteFixup( parent ) ;
+					//deleteFixup( parent ) ;
 				}
 			}
 		}
@@ -654,7 +710,7 @@ public class RedBlackTree<T> {
 	
 	public boolean isLeftChild(RedBlackNode<T> node)
 	{
-		if( node.parent.left == node)
+		if(  node.parent.left == node)
 		{
 			//yes given is left child of its parent
 			return true ;
@@ -678,7 +734,7 @@ public class RedBlackTree<T> {
 		return right ;
 	}
 	
-	public RedBlackNode<T> findKey( int key , RedBlackNode<T> node  )
+	public RedBlackNode<T> findKeyNode( int key , RedBlackNode<T> node  )
 	{
 		//When node is null or reached the null leaf node return null
 		//No key found
@@ -689,12 +745,12 @@ public class RedBlackTree<T> {
 		if( node.key > key )
 		{
 			//when current node key is greater than the key, than search in left subtree
-			keyNode = findKey(key , node.left ) ;
+			keyNode = findKeyNode(key , node.left ) ;
 		}
 		else if( node.key < key )
 		{
 			//when current node key is smaller than the key, than search in left subtree
-			keyNode = findKey(key , node.right ) ;
+			keyNode = findKeyNode(key , node.right ) ;
 		}
 		else
 		{

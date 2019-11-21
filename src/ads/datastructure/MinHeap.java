@@ -40,7 +40,7 @@ public class MinHeap<T> {
 		if(size == 0)
 			return null ;
 		T min =  hArray[0] ;
-		hArray[0] = hArray[size--] ;
+		hArray[0] = hArray[--size] ;
 		if( size > 0)
 		{
 			topdownHeapify(0) ;
@@ -53,7 +53,7 @@ public class MinHeap<T> {
 	// 
 	public void updateKey( T key , int index )
 	{
-		if( index > 0 && index < size)
+		if( index >= 0 && index < size)
 		{
 			hArray[index] = key ;
 			bottomupHeapify(index) ;
@@ -94,10 +94,12 @@ public class MinHeap<T> {
 		{
 			smallest = left ;
 		}
-		if( right < size && comp.compare( hArray[right] , hArray[index] ) < 0 )
+		if( right < size && comp.compare( hArray[right] , hArray[smallest] ) < 0 )
 		{
 			smallest = right ;
 		}
+		
+		
 		if(smallest != index)
 		{
 			T tmp = hArray[smallest] ;
