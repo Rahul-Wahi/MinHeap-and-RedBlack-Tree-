@@ -1,9 +1,11 @@
 package ads.datastructure;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class risingCity {
 	MinHeap<Building> buildingRecord;
 	RedBlackTree<Building> buildingRecordByBuilding ;
 	BufferedReader br ;
+	BufferedWriter writer ;
 	String command  ;
 	boolean hasMoreCommands ;
 	Integer currentBuildingNumber ;
@@ -26,12 +29,13 @@ public class risingCity {
 	
 	
 	
-	public risingCity( int capacity , BufferedReader br) {
+	public risingCity( int capacity , BufferedReader br , BufferedWriter writer) {
 		buildingRecord = new MinHeap<Building>(capacity , new Comparatorexecutedtime() ) ;
 		buildingRecordByBuilding = new RedBlackTree<Building>(new ComparatorbuildingNum() ) ;
 		//command = new ArrayList<String>() ;
 		currentBuildingNumber = null ;
 		this.br = br ;
+		this.writer = writer ;
 		
 		readLine() ;
 		
@@ -174,7 +178,7 @@ public class risingCity {
 				}
 				
 				
-				while( tmp > 0 )
+				while( tmp > 1 )
 				{
 					old_executed_time += 1;
 					building.executed_time = old_executed_time ;
@@ -187,7 +191,9 @@ public class risingCity {
 				if( minTime == remainingTime)
 				{
 					int completedTime = risingCity.globalTime + minTime - 1 ;
-					System.out.println( "(" + buildingNum +  ","  + risingCity.globalTime + ")"  ) ; 
+					System.out.println( "(" + buildingNum +  ","  + risingCity.globalTime + ")"  ) ;
+					this.write("(" + buildingNum +  ","  + risingCity.globalTime + ")\n") ;
+					
 					//Now delete from RBT, when global counter reaches the construction time
 					buildingRecordByBuilding.delete(buildingNum);
 				}
@@ -205,6 +211,16 @@ public class risingCity {
 			}
 		}
 		
+	}
+	
+	public void  write(String str)
+	{
+		try {
+			writer.write( str );
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public void insert(int buildingNum, int total_time)
 	{
@@ -226,17 +242,21 @@ public class risingCity {
 		if( result.size() == 0)
 		{
 			System.out.println("(0,0,0)");
+			this.write("(0,0,0)\n") ; 
 		}
 		for(int i = 0 ; i < result.size() ; i++)
 		{
 			System.out.print("(" +  result.get(i).buildingNum + "," + result.get(i).executed_time + "," + result.get(i).total_time + ")");
+			this.write("(" +  result.get(i).buildingNum + "," + result.get(i).executed_time + "," + result.get(i).total_time + ")")  ;
 			if( i != result.size() - 1)
 			{
-				System.out.print(",");
+				System.out.print(",") ;
+				this.write(",") ;
 			}
 			else
 			{
 				System.out.println() ;
+				this.write("\n") ;
 			}
 		}
 	}
@@ -248,17 +268,21 @@ public class risingCity {
 		if( result.size() == 0)
 		{
 			System.out.println("(0,0,0)");
+			this.write( "(0,0,0)\n" ) ;
 		}
 		for(int i = 0 ; i < result.size() ; i++)
 		{
 			System.out.print("(" +  result.get(i).buildingNum + "," + result.get(i).executed_time + "," + result.get(i).total_time + ")");
+			this.write( "(" +  result.get(i).buildingNum + "," + result.get(i).executed_time + "," + result.get(i).total_time + ")" ) ;
 			if( i != result.size() - 1)
 			{
 				System.out.print(",");
+				this.write(",") ;
 			}
 			else
 			{
 				System.out.println() ;
+				this.write("\n") ;
 			}
 		}
 	}
@@ -303,9 +327,18 @@ public class risingCity {
 			return ;
 		} 
 		  
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter("C:\\ADS\\RisingCity\\src\\ads\\datastructure\\output_file.txt"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return ;
+		}
+	   // writer.write(fileContent);
 	   
             //System.out.println("args[" + i + "]: " + args[i]);
-		risingCity rc = new risingCity(2000 , br) ;
+		risingCity rc = new risingCity(2000 , br , writer) ;
 //		rc.insert(1, 12);
 //		rc.insert(10, 10);
 //		rc.insert(2, 11);
@@ -317,6 +350,12 @@ public class risingCity {
 		//System.out.println(rc.getMin());
 		//rc.print(1) ;
 		rc.startWork();
+		try {
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		
