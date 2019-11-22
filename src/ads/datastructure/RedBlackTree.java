@@ -3,6 +3,7 @@ package ads.datastructure;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RedBlackTree<T> {
 
@@ -17,7 +18,7 @@ public class RedBlackTree<T> {
 
 	public void insert( int key , T data)
 	{
-		if( this.root == null)
+		if( this.root == null || this.root.isLeafNode)
 		{
 			//root is black node
 			this.root = new RedBlackNode<T>(key , null ,  data , 0) ;
@@ -28,12 +29,86 @@ public class RedBlackTree<T> {
 		RedBlackNode<T> insertedNode = insert( root , key ,  data ) ;
 		doBalancing( this.newNode ) ;
 		
+//		if( validateRedBlackTree(this.root) )
+//		{
+//			System.out.println("Valid Insert");
+//		}
+//		else
+//		{
+//			System.out.println("InValid Insert");
+//		}
+		//preorderTraversal(this.root);
+		//System.out.println();
+		
 		//insert()
 	}
 
+	public void preorderTraversal( RedBlackNode<T> node ) 
+	{
+		if(node == null || node.isLeafNode)
+			return;
+		if(node.color == 1)
+		{
+			System.out.print(node.key + "R") ;
+		}
+		else
+		{
+			System.out.print(node.key + "B") ;
+		}
+		
+		preorderTraversal(node.left);
+		preorderTraversal(node.right);
+		
+		
+	}
+	
+	 public boolean validateRedBlackTree(RedBlackNode<T>  root) {
+
+	        if(root == null) {
+	            return true;
+	        }
+	        //check if root is black
+	        if(root.color != 0) {
+	            System.out.print("Root is not black");
+	            return false;
+	        }
+	        //Use of AtomicInteger solely because java does not provide any other mutable int wrapper.
+	        AtomicInteger blackCount = new AtomicInteger(0);
+	        //make sure black count is same on all path and there is no red red relationship
+	        return checkBlackNodesCount(root, blackCount, 0) && noRedRedParentChild(root, 0);
+	    }
+	 
+	 private boolean noRedRedParentChild(RedBlackNode<T> root, int parentColor) {
+	        if(root == null) {
+	            return true;
+	        }
+	        if(root.color == 1 && parentColor == 1) {
+	            return false;
+	        }
+
+	        return noRedRedParentChild(root.left, root.color) && noRedRedParentChild(root.right, root.color);
+	    }
+	 
+	 private boolean checkBlackNodesCount(RedBlackNode<T> root, AtomicInteger blackCount, int currentCount) {
+
+	        if(root.color == 0) {
+	            currentCount++;
+	        }
+
+	        if(root.left == null && root.right == null) {
+	            if(blackCount.get() == 0) {
+	                blackCount.set(currentCount);
+	                return true;
+	            } else {
+	                return currentCount == blackCount.get();
+	            }
+	        }
+	        return checkBlackNodesCount(root.left, blackCount, currentCount) && checkBlackNodesCount(root.right, blackCount, currentCount);
+	    }
+	 
 	public RedBlackNode<T> insert(RedBlackNode<T> root, int key , T data) {
 		if (root.isLeafNode == true) {
-			// root is black node
+			// all new inserted nodes are red node
 			RedBlackNode<T> newNode =  new RedBlackNode<T>(key , root.parent ,  data, 1);
 			this.newNode =  newNode;
 			return newNode ;
@@ -42,8 +117,13 @@ public class RedBlackTree<T> {
 
 		if (comp.compare((T) root.data, data) > 0) {
 			root.left = insert(root.left, key,  data);
-		} else {
+		} else if( comp.compare((T) root.data, data) < 0) {
 			root.right = insert(root.right, key, data);
+		}
+		else
+		{
+			System.out.println("Building Number " + key + " already exists, stopping the program");
+			System.exit(0); 
 		}
 		
 		//if XY b case
@@ -159,7 +239,7 @@ public class RedBlackTree<T> {
 					}
 				}
 			}
-			else
+			else if ( x == parent.left && parent == grandParent.right )
 			{
 				//check for RLb case
 				if(  grandParent.left.color == 0  )
@@ -485,14 +565,33 @@ public class RedBlackTree<T> {
 			//deleteNode(inorderSuccessorNode) ;
 		}
 		
+		//System.out.println("Debug " + key + keyNode.key);
 		
+//		if(keyNode.key == 18872)
+//		{
+//			System.out.println("Debug " + key + keyNode.key);
+//		}
 		deleteNode( keyNode ) ;
+		
+//		if( validateRedBlackTree(this.root) )
+//		{
+//			System.out.println("Valid Delete");
+//		}
+//		else
+//		{
+//			//System.out.println("InValid Delete");
+//			System.out.println("InValid Delete " + key + " successor " + keyNode.key);
+//		}
 		
 	}
 	
 	//This function will delete the given node
 	public void deleteNode( RedBlackNode<T> node )
 	{
+//		if( node.key == 1665)
+//		{
+//			System.out.println("Debug from here");
+//		}
 		node.left.parent = node.parent ;
 		node.right.parent = node.parent ;
 		RedBlackNode<T> deficientNode = null ;
@@ -571,7 +670,7 @@ public class RedBlackTree<T> {
 			
 			//case 6, parent color does not matter, sibling black, sibling's left child color does not matter
 			//sibling's right child color red
-			if( S.color == 0 && S.right.color == 1)
+			if( S.color == 0 && !S.isLeafNode && S.right.color == 1)
 			{
 				S.color = parent.color;
 				S.right.color = 0 ;
@@ -580,8 +679,16 @@ public class RedBlackTree<T> {
 				rrRotation(S) ;
 				return ;
 			}
+			//from ppt lb1, case 2
+			//case 7, parent color does not matter
+			else if (S.color == 0 && !S.isLeafNode && S.left.color == 1)
+			{
+				S.left.color = parent.color ;
+				parent.color = 0 ;
+				rlRotation(S.left) ;
+			}
 			
-			if( parent.color == 0 )
+			else if( parent.color == 0 )
 			{
 				//parent is black
 				
@@ -596,7 +703,7 @@ public class RedBlackTree<T> {
 				
 				//case 3, sibling is black, with both childeren red
 				// make sibling red and shift deficiency to parent
-				if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
+				else if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
 				{
 					
 					S.color = 1 ;
@@ -605,7 +712,7 @@ public class RedBlackTree<T> {
 				}
 				
 				//case 5 , sibling is black, sibling's left child red, sibling right child black
-				if( S.color == 0 && S.left.color == 1 && S.right.color == 0 )
+				else if( S.color == 0 && S.left.color == 1 && S.right.color == 0 )
 				{
 					S.left.color = 0;
 					S.color = 1 ;
@@ -621,7 +728,7 @@ public class RedBlackTree<T> {
 			else
 			{
 				//parent is red
-				
+				//System.out.println("debug " + S.key + S.isLeafNode + " " + parent.key + " " + node.key);
 				//case 4, sibling black, with both children black
 				if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
 				{
@@ -641,7 +748,7 @@ public class RedBlackTree<T> {
 			
 			//case 6, parent color does not matter, sibling black, sibling's left child color does not matter
 			//sibling's right child color red // check this
-			if( S.color == 0 && S.left.color == 1)
+			if( S.color == 0 &&  !S.isLeafNode && S.left.color == 1)
 			{
 				S.color = parent.color;
 				S.left.color = 0 ;
@@ -650,8 +757,16 @@ public class RedBlackTree<T> {
 				llRotation(S) ;
 				return ;
 			}
-			
-			if( parent.color == 0 )
+			//from ppt rb1, case 2
+			//case 7, parent color does not matter
+			else if (S.color == 0 && !S.isLeafNode && S.right.color == 1)
+			{
+				S.right.color = parent.color ;
+				parent.color = 0 ;
+				lrRotation(S.right) ;
+				return ;
+			}
+			else if( parent.color == 0 )
 			{
 				//parent is black
 				
@@ -667,7 +782,7 @@ public class RedBlackTree<T> {
 				
 				//case 3, sibling is black, with both childeren red
 				// make sibling red and shift deficiency to parent
-				if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
+				else if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
 				{
 					
 					S.color = 1 ;
@@ -676,7 +791,7 @@ public class RedBlackTree<T> {
 				}
 				
 				//case 5 , sibling is black, sibling's left child red, sibling right child black
-				if( S.color == 0 && S.right.color == 1 && S.left.color == 0 )
+				else if( S.color == 0 && S.right.color == 1 && S.left.color == 0 )
 				{
 					S.right.color = 0;
 					S.color = 1 ;
