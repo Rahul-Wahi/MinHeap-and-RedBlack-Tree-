@@ -43,68 +43,7 @@ public class RedBlackTree<T> {
 		//insert()
 	}
 
-	public void preorderTraversal( RedBlackNode<T> node ) 
-	{
-		if(node == null || node.isLeafNode)
-			return;
-		if(node.color == 1)
-		{
-			System.out.print(node.key + "R") ;
-		}
-		else
-		{
-			System.out.print(node.key + "B") ;
-		}
-		
-		preorderTraversal(node.left);
-		preorderTraversal(node.right);
-		
-		
-	}
 	
-	 public boolean validateRedBlackTree(RedBlackNode<T>  root) {
-
-	        if(root == null) {
-	            return true;
-	        }
-	        //check if root is black
-	        if(root.color != 0) {
-	            System.out.print("Root is not black");
-	            return false;
-	        }
-	        //Use of AtomicInteger solely because java does not provide any other mutable int wrapper.
-	        AtomicInteger blackCount = new AtomicInteger(0);
-	        //make sure black count is same on all path and there is no red red relationship
-	        return checkBlackNodesCount(root, blackCount, 0) && noRedRedParentChild(root, 0);
-	    }
-	 
-	 private boolean noRedRedParentChild(RedBlackNode<T> root, int parentColor) {
-	        if(root == null) {
-	            return true;
-	        }
-	        if(root.color == 1 && parentColor == 1) {
-	            return false;
-	        }
-
-	        return noRedRedParentChild(root.left, root.color) && noRedRedParentChild(root.right, root.color);
-	    }
-	 
-	 private boolean checkBlackNodesCount(RedBlackNode<T> root, AtomicInteger blackCount, int currentCount) {
-
-	        if(root.color == 0) {
-	            currentCount++;
-	        }
-
-	        if(root.left == null && root.right == null) {
-	            if(blackCount.get() == 0) {
-	                blackCount.set(currentCount);
-	                return true;
-	            } else {
-	                return currentCount == blackCount.get();
-	            }
-	        }
-	        return checkBlackNodesCount(root.left, blackCount, currentCount) && checkBlackNodesCount(root.right, blackCount, currentCount);
-	    }
 	 
 	public RedBlackNode<T> insert(RedBlackNode<T> root, int key , T data) {
 		if (root.isLeafNode == true) {
