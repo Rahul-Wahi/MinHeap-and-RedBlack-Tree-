@@ -38,6 +38,13 @@ public class risingCity {
 		
 	}
 	
+	
+	/***********************
+	Function Name: readLine
+	Argument: None
+	Description: This function will the read the next line from the input file
+	             and if no more commands available set the hasMoreCommands to false 
+	 ***********************/
 	public void readLine()
 	{
 		try {
@@ -59,7 +66,12 @@ public class risingCity {
 			e.printStackTrace();
 		}
 	}
-	//Increment counter and call executeCommand function
+	
+	/***********************
+	Function Name: incrementCounter
+	Argument: None
+	Description: This function will Increment global counter and call executeCommand function if hasMoreCommands = true
+	 ***********************/
 	public void incrementCounter()
 	{
 		risingCity.globalTime++ ;
@@ -70,7 +82,11 @@ public class risingCity {
 		
 	}
 	
-	//will exexute commands based on global counter value
+	/***********************
+	Function Name: executeCommand
+	Argument: None
+	Description: This function will parse the command and execute commands(insert/print) if command time matches global time
+	 ***********************/
 	public void executeCommand()
 	{
 		
@@ -130,13 +146,13 @@ public class risingCity {
 		}
 	}
 
-	
-	//will exexute commands based on global counter value
-	public int getMin()
-	{
-		return 	buildingRecord.getMin().buildingNum ;
-	}
-	
+
+	/***********************
+	Function Name: startWork
+	Argument: None
+	Description: This function is responsible for the work flow. It will continue to work until there are
+				 no more commands and no buildings available for construction 
+	 ***********************/
 	// will pick buildings from heap 1 by 1
 	// will call incrementCounter function
 	public void startWork(  )
@@ -205,6 +221,11 @@ public class risingCity {
 		
 	}
 	
+	/***********************
+	Function Name: write
+	Argument: String str
+	Description: This function will write str to opened output_file.txt
+	 ***********************/
 	public void  write(String str)
 	{
 		try {
@@ -214,19 +235,27 @@ public class risingCity {
 			e.printStackTrace();
 		}
 	}
+	
+	/***********************
+	Function Name: insert
+	Argument: int buildingNum, int total_time
+	Description: This function insert building with building no as buildingNum
+				 and total time as total_time into heap and Red black tree
+	 ***********************/
 	public void insert(int buildingNum, int total_time)
 	{
-//		if( buildingNum == this.currentBuildingNumber )
-//		{
-//			System.out.println("Building Number " + buildingNum + " already exists, stopping the program");
-//			System.exit(0); 
-//		}
-		
+
 		Building building = new Building( buildingNum, total_time ) ;
 		buildingRecord.insert( building );
 		buildingRecordByBuilding.insert(buildingNum,building);
 	}
 	
+	/***********************
+	Function Name: print
+	Argument: int buildingNum
+	Description: This function print the triplet building no, exdcuted_time , total_time of the building
+	 			 whose building no = buildingNum, if there is no building available then it will print (0,0,0)
+	 ***********************/
 	public void print( int buildingNum)
 	{
 		List<Building> result = buildingRecordByBuilding.findElement(buildingNum);
@@ -253,6 +282,12 @@ public class risingCity {
 		}
 	}
 	
+	/***********************
+	Function Name: print
+	Argument: int buildingNum1, int buildingNum2
+	Description: This function print the triplet building no, exdcuted_time , total_time of all the building
+	 			 whose building no is in between buildingNum1, buildingNum2 if there is no building available then it will print (0,0,0)
+	 ***********************/
 	public void print( int buildingNum1, int buildingNum2)
 	{
 		List<Building> result = buildingRecordByBuilding.findElement(buildingNum1, buildingNum2);
@@ -279,7 +314,12 @@ public class risingCity {
 		}
 	}
 	
-	
+	/***********************
+	Function Name: delete
+	Argument: int buildingNum
+	Description: This function will delete the building record
+				 whose building no. = buildingNum
+	 ***********************/
 	public void delete( int buildingNum )
 	{
 	
