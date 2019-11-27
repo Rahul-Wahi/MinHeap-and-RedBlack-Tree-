@@ -16,6 +16,13 @@ public class RedBlackTree<T> {
 		this.comp = comp;
 	}
 
+	/***********************
+	Function Name: insert
+	Argument: int key , T data
+	Description: This function will insert the provided key, data of any type(Generic T) in to tree
+				 and do the appropriate balancing. This function is just a wrapper for the actual insert function
+	Return: None
+	 ***********************/
 	public void insert( int key , T data)
 	{
 		if( this.root == null || this.root.isLeafNode)
@@ -44,7 +51,13 @@ public class RedBlackTree<T> {
 	}
 
 	
-	 
+	/***********************
+	Function Name: insert
+	Argument: RedBlackNode<T> root, int key , T data
+	Description: This function will insert the provided key, data of any type(Generic T). This is a recursive function
+				 , it recursively traverse the tree and finds the correct position for the data and then insert in the tree
+	Return: RedBlackNode<T>
+	 ***********************/
 	public RedBlackNode<T> insert(RedBlackNode<T> root, int key , T data) {
 		if (root.isLeafNode == true) {
 			// all new inserted nodes are red node
@@ -65,17 +78,18 @@ public class RedBlackTree<T> {
 			System.exit(0); 
 		}
 		
-		//if XY b case
-		{
-			// Changing the color of node x from red to black
-			//x.color = 0;
-
-			// Changing the color of old parent from black to red
-			//parent.color = 1;
-		}
+		
 		return root;
 	}
 
+	
+	/***********************
+	Function Name: doBalancing
+	Argument: RedBlackNode<T> x
+	Description: This function will do the balancing of tree starting from the given node x and
+				 continue the balancing up the tree until it reaches root or tree is balanced   
+	Return: RedBlackNode<T>
+	 ***********************/
 	public void doBalancing(RedBlackNode<T> x)
 	{
 		if( x ==  this.root)
@@ -207,7 +221,13 @@ public class RedBlackTree<T> {
 			}
 		}
 	}
-	// Will do the LL rotation from node x
+	
+	/***********************
+	Function Name: llRotation
+	Argument: RedBlackNode<T> x
+	Description: This function will do the LL Rotation from the given node x 
+	Return: None
+	 ***********************/
 	public void llRotation(RedBlackNode<T> x) {
 		// save x parents
 		RedBlackNode<T> parent = x.parent;
@@ -260,7 +280,12 @@ public class RedBlackTree<T> {
 		//parent.color = 1;
 	}
 
-	// Will do the RR rotation from node x
+	/***********************
+	Function Name: rrRotation
+	Argument: RedBlackNode<T> x
+	Description: This function will do the RR Rotation from the given node x 
+	Return: None
+	 ***********************/
 	public void rrRotation(RedBlackNode<T> x) {
 		// save x parents
 		RedBlackNode<T> parent = x.parent;
@@ -306,11 +331,14 @@ public class RedBlackTree<T> {
 		
 	}
 
-	// rotate lr rotions with respect to node x
+	/***********************
+	Function Name: lrRotation
+	Argument: RedBlackNode<T> x
+	Description: This function will do the LR Rotation from the given node x 
+	Return: None
+	 ***********************/
 	public void lrRotation(RedBlackNode<T> x) {
 
-		// first do rr rotation with respect to x
-		//rrRotation(x);
 		RedBlackNode<T> parent = x.parent ;
 		RedBlackNode<T> grandparent = x.parent.parent ;
 		
@@ -342,16 +370,17 @@ public class RedBlackTree<T> {
 		grandparent.parent = x;
 		parent.parent = x ;
 		
-		// then do ll rotation with respect to x
-		//llRotation(x);
-
 	}
 
-	// rotate lr rotions with respect to node x
+	
+	/***********************
+	Function Name: rlRotation
+	Argument: RedBlackNode<T> x
+	Description: This function will do the RL Rotation from the given node x 
+	Return: None
+	 ***********************/
 	public void rlRotation(RedBlackNode<T> x) {
 
-		// first do ll rotation with respect to x
-		//llRotation(x);
 		
 		RedBlackNode<T> parent = x.parent ;
 		RedBlackNode<T> grandparent = x.parent.parent ;
@@ -384,17 +413,22 @@ public class RedBlackTree<T> {
 		grandparent.parent = x;
 		parent.parent = x ;
         
-		// then do rr rotation with respect to x
-		//rrRotation(x);
-
+		
 	}
 
-	public List<T> findElement( int buildingNum1 , int buildingNum2 ) {
+	/***********************
+	Function Name: findElement
+	Argument: int key1 , int key2
+	Description: This function will find and return list of red black nodes whose key lies between key1 and key2 ( both including ) 
+				 and will return the list of nodes
+	Return: List<T>
+	 ***********************/
+	public List<T> findElement( int key1 , int key2 ) {
 		
 		
-		RedBlackNode<T> node = findKeyNodeBetweenRange( this.root , buildingNum1, buildingNum2 ) ;
+		RedBlackNode<T> node = findKeyNode( this.root , key1, key2 ) ;
 		List<T> result = new ArrayList<T>() ;
-		//if(  !( root != null && buildingNum1 <= root.key  &&  buildingNum2 >= root.key ) )
+		//if(  !( root != null && key1 <= root.key  &&  key2 >= root.key ) )
 		if(node == null)
 		{
 			//System.out.println("(0,0,0)");
@@ -402,19 +436,25 @@ public class RedBlackTree<T> {
 		}
 		else
 		{
-			result = printRangeHelper( buildingNum1 , buildingNum2 , node ) ;
+			result = findElementsInRange( key1 , key2 , node ) ;
 		}
 		
 		return result ;
 		
 	}
 	
-	public List<T> findElement( int buildingNum1  ) {
+	/***********************
+	Function Name: findElement
+	Argument: int key1
+	Description: This function will find and return list of red black node key equal to the given key1 
+	Return: List<T>
+	 ***********************/
+	public List<T> findElement( int key1  ) {
 		
 		
-		RedBlackNode<T> node = findKeyNode(buildingNum1 , this.root) ;
+		RedBlackNode<T> node = findKeyNode(this.root , key1 ) ;
 		List<T> result = new ArrayList<T>() ;
-		//if(  !( root != null && buildingNum1 <= root.key  &&  buildingNum2 >= root.key ) )
+		//if(  !( root != null && key1 <= root.key  &&  key2 >= root.key ) )
 		
 		
 		if(node == null)
@@ -430,22 +470,78 @@ public class RedBlackTree<T> {
 		return result ;
 		
 	}
-	public RedBlackNode<T> findKeyNodeBetweenRange(RedBlackNode<T> node, int buildingNum1 , int buildingNum2 )
+	
+	public void inorder(RedBlackNode<T> node)
+	{
+		if(node.isLeafNode)
+			return ;
+		
+		String color = "BLACK" ;
+		if( node.color == 1)
+		{
+			color = "RED" ;
+		}
+		inorder(node.left) ;
+		System.out.println( node.key + ":" + color  + " ");
+		inorder(node.right) ;
+	}
+	
+	/***********************
+	Function Name: findKeyNode
+	Argument: int key , RedBlackNode<T> node
+	Description: This function will find the node with given key and it will start the search from the given node  
+	Return: RedBlackNode<T>
+	 ***********************/
+	public RedBlackNode<T> findKeyNode( RedBlackNode<T> node , int key )
+	{
+		//When node is null or reached the null leaf node return null
+		//No key found
+		if(node == null || node.isLeafNode )
+			return null ;
+		
+		RedBlackNode<T> keyNode = null ;
+		if( node.key > key )
+		{
+			//when current node key is greater than the key, than search in left subtree
+			keyNode = findKeyNode( node.left , key ) ;
+		}
+		else if( node.key < key )
+		{
+			//when current node key is smaller than the key, than search in left subtree
+			keyNode = findKeyNode( node.right , key ) ;
+		}
+		else
+		{
+			//when equal return the node itself
+			return node ;
+		}
+		
+		return keyNode ;
+	}
+	
+	/***********************
+	Function Name: findKeyNode
+	Argument: RedBlackNode<T> node, int key1 , int key2
+	Description: This function will find the first node that is between key1 and key2 (both including) 
+				 and will start the search from given node
+	Return: RedBlackNode<T>
+	 ***********************/
+	public RedBlackNode<T> findKeyNode(RedBlackNode<T> node, int key1 , int key2 )
 	{
 		if(node == null || node.isLeafNode)
 			return null ;
 		
 		RedBlackNode<T> result = null ;
-		if( node.key <  buildingNum1)
+		if( node.key <  key1)
 		{
-			result =  findKeyNodeBetweenRange(node.right , buildingNum1 , buildingNum2) ;
+			result =  findKeyNode(node.right , key1 , key2) ;
 		}
-		if(node.key > buildingNum2)
+		if(node.key > key2)
 		{
-			result =  findKeyNodeBetweenRange(node.left, buildingNum1 , buildingNum2 ) ;
+			result =  findKeyNode(node.left, key1 , key2 ) ;
 		}
 		
-		if( buildingNum1 <= node.key && node.key <= buildingNum2 )
+		if( key1 <= node.key && node.key <= key2 )
 		{
 			return node ;
 		}
@@ -454,15 +550,23 @@ public class RedBlackTree<T> {
 		
 	}
 	
-	public List<T> printRangeHelper( int buildingNum1 , int buildingNum2 , RedBlackNode<T> root )
+	
+	/***********************
+	Function Name: findElementsInRange
+	Argument: int key1 , int key2 , RedBlackNode<T> root
+	Description: This function will find and return list of all the elements whose keys lies between
+				 key1 and key2 (both including) and will search element from provided root node
+	Return: List<T>
+	 ***********************/
+	public List<T> findElementsInRange( int key1 , int key2 , RedBlackNode<T> root )
 	{
 		if( root == null || root.isLeafNode == true )
 			return null;
 		
 		List<T> result = new ArrayList<T>() ;
-		if( buildingNum1 <= root.key  &&  buildingNum2 >= root.key )
+		if( key1 <= root.key  &&  key2 >= root.key )
 		{
-			List<T> tmp = printRangeHelper(buildingNum1 , buildingNum2 , root.left ) ;
+			List<T> tmp = findElementsInRange(key1 , key2 , root.left ) ;
 			if (tmp != null)
 			{
 				result.addAll(tmp) ;
@@ -470,7 +574,7 @@ public class RedBlackTree<T> {
 			result.add(root.data) ;
 			//((T) root.data).printValues() ;
 			//((T)root.data).printValues() ;
-			tmp = printRangeHelper(buildingNum1 , buildingNum2 , root.right ) ;
+			tmp = findElementsInRange(key1 , key2 , root.right ) ;
 			if (tmp != null)
 			{
 				result.addAll(tmp) ;
@@ -484,10 +588,16 @@ public class RedBlackTree<T> {
 		
 	}
 	
+	/***********************
+	Function Name: delete
+	Argument: int key
+	Description: This function will delete the node with given key
+	Return: Node
+	 ***********************/
 	//This function will find the key node and delete that node
 	public void delete( int key)
 	{
-		RedBlackNode<T> keyNode = findKeyNode( key , this.root ) ;
+		RedBlackNode<T> keyNode = findKeyNode( this.root , key ) ;
 		
 		if( keyNode == null)
 		{
@@ -504,33 +614,21 @@ public class RedBlackTree<T> {
 			//deleteNode(inorderSuccessorNode) ;
 		}
 		
-		//System.out.println("Debug " + key + keyNode.key);
-		
-//		if(keyNode.key == 18872)
-//		{
-//			System.out.println("Debug " + key + keyNode.key);
-//		}
 		deleteNode( keyNode ) ;
-		
-//		if( validateRedBlackTree(this.root) )
-//		{
-//			System.out.println("Valid Delete");
-//		}
-//		else
-//		{
-//			//System.out.println("InValid Delete");
-//			System.out.println("InValid Delete " + key + " successor " + keyNode.key);
-//		}
+
 		
 	}
 	
+	/***********************
+	Function Name: delete
+	Argument: RedBlackNode<T> node
+	Description: This function will delete given Red Black Node node and call the deleteFixup function
+	Return: None
+	 ***********************/
 	//This function will delete the given node
 	public void deleteNode( RedBlackNode<T> node )
 	{
-//		if( node.key == 1665)
-//		{
-//			System.out.println("Debug from here");
-//		}
+
 		node.left.parent = node.parent ;
 		node.right.parent = node.parent ;
 		RedBlackNode<T> deficientNode = null ;
@@ -589,6 +687,13 @@ public class RedBlackTree<T> {
 		
 	}
 	
+	/***********************
+	Function Name: deleteFixup
+	Argument: RedBlackNode<T> node
+	Description: This function will start fixing the tree from given node and contnue up the tree
+				 until deficiency is removed or it reaches the root node 
+	Return: None
+	 ***********************/
 	public void deleteFixup(RedBlackNode<T> node)
 	{
 		RedBlackNode<T> deficientNode = node ;
@@ -671,7 +776,6 @@ public class RedBlackTree<T> {
 				//case 4, sibling black, with both children black
 				if( S.color == 0 && S.left.color == 0 && S.right.color == 0 )
 				{
-					
 					S.color = 1 ;
 					parent.color = 0 ;
 					//parent is deficient
@@ -762,6 +866,12 @@ public class RedBlackTree<T> {
 		
 	}
 	
+	/***********************
+	Function Name: isLeftChild
+	Argument: RedBlackNode<T> node
+	Description: This function will check if the given node is left child of its parent or not
+	Return: boolean
+	 ***********************/
 	public boolean isLeftChild(RedBlackNode<T> node)
 	{
 		if(  node.parent.left == node)
@@ -775,7 +885,12 @@ public class RedBlackTree<T> {
 			
 	}
 	
-	//This function will return the inorder successor of Node node
+	/***********************
+	Function Name: inorderSuccessor
+	Argument: RedBlackNode<T> node
+	Description: This function will find the in order successor(minimum element in right subtree of node) of given node  
+	Return: RedBlackNode<T>
+	 ***********************/
 	public RedBlackNode<T> inorderSuccessor(RedBlackNode<T> node)
 	{
 		//return leftmost not null node in right subtree of node
@@ -788,32 +903,15 @@ public class RedBlackTree<T> {
 		return right ;
 	}
 	
-	public RedBlackNode<T> findKeyNode( int key , RedBlackNode<T> node  )
-	{
-		//When node is null or reached the null leaf node return null
-		//No key found
-		if(node == null || node.isLeafNode )
-			return null ;
-		
-		RedBlackNode<T> keyNode = null ;
-		if( node.key > key )
-		{
-			//when current node key is greater than the key, than search in left subtree
-			keyNode = findKeyNode(key , node.left ) ;
-		}
-		else if( node.key < key )
-		{
-			//when current node key is smaller than the key, than search in left subtree
-			keyNode = findKeyNode(key , node.right ) ;
-		}
-		else
-		{
-			//when equal return the node itself
-			return node ;
-		}
-		
-		return keyNode ;
-	}
+	
+	
+	
+	/***********************
+	Function Name: RedBlackNode<T>
+	Argument: int key , RedBlackNode<T> node
+	Description: Constructor for initialization of Red Black Tree
+	Return: RedBlackNode<T>
+	 ***********************/
 	class RedBlackNode<T> {
 		int color;// 0 for black , 1 for red
 		RedBlackNode<T> left, right, parent;
