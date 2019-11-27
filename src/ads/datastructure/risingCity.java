@@ -44,6 +44,7 @@ public class risingCity {
 	Argument: None
 	Description: This function will the read the next line from the input file
 	             and if no more commands available set the hasMoreCommands to false 
+	Return: None
 	 ***********************/
 	public void readLine()
 	{
@@ -71,6 +72,7 @@ public class risingCity {
 	Function Name: incrementCounter
 	Argument: None
 	Description: This function will Increment global counter and call executeCommand function if hasMoreCommands = true
+	Return: None
 	 ***********************/
 	public void incrementCounter()
 	{
@@ -86,6 +88,7 @@ public class risingCity {
 	Function Name: executeCommand
 	Argument: None
 	Description: This function will parse the command and execute commands(insert/print) if command time matches global time
+	Return: None
 	 ***********************/
 	public void executeCommand()
 	{
@@ -152,9 +155,9 @@ public class risingCity {
 	Argument: None
 	Description: This function is responsible for the work flow. It will continue to work until there are
 				 no more commands and no buildings available for construction 
+				 (will pick buildings from heap 1 by 1) (  will call incrementCounter function )
+	Return: None
 	 ***********************/
-	// will pick buildings from heap 1 by 1
-	// will call incrementCounter function
 	public void startWork(  )
 	{
 		//incrementCounter() ;
@@ -225,6 +228,7 @@ public class risingCity {
 	Function Name: write
 	Argument: String str
 	Description: This function will write str to opened output_file.txt
+	Return: None
 	 ***********************/
 	public void  write(String str)
 	{
@@ -241,6 +245,7 @@ public class risingCity {
 	Argument: int buildingNum, int total_time
 	Description: This function insert building with building no as buildingNum
 				 and total time as total_time into heap and Red black tree
+	Return: None
 	 ***********************/
 	public void insert(int buildingNum, int total_time)
 	{
@@ -255,6 +260,7 @@ public class risingCity {
 	Argument: int buildingNum
 	Description: This function print the triplet building no, exdcuted_time , total_time of the building
 	 			 whose building no = buildingNum, if there is no building available then it will print (0,0,0)
+	Return: None
 	 ***********************/
 	public void print( int buildingNum)
 	{
@@ -287,6 +293,7 @@ public class risingCity {
 	Argument: int buildingNum1, int buildingNum2
 	Description: This function print the triplet building no, exdcuted_time , total_time of all the building
 	 			 whose building no is in between buildingNum1, buildingNum2 if there is no building available then it will print (0,0,0)
+	Return: None
 	 ***********************/
 	public void print( int buildingNum1, int buildingNum2)
 	{
@@ -319,6 +326,7 @@ public class risingCity {
 	Argument: int buildingNum
 	Description: This function will delete the building record
 				 whose building no. = buildingNum
+	Return: None
 	 ***********************/
 	public void delete( int buildingNum )
 	{
