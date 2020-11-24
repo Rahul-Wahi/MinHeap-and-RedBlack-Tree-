@@ -35,20 +35,7 @@ public class RedBlackTree<T> {
 		
 		RedBlackNode<T> insertedNode = insert( root , key ,  data ) ;
 		doBalancing( this.newNode ) ;
-		
-//		if( validateRedBlackTree(this.root) )
-//		{
-//			System.out.println("Valid Insert");
-//		}
-//		else
-//		{
-//			System.out.println("InValid Insert");
-//		}
-		//preorderTraversal(this.root);
-		//System.out.println();
-		
-		//insert()
-	}
+	
 
 	
 	/***********************
